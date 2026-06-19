@@ -1,6 +1,8 @@
 'use client'
 
 import Image from 'next/image'
+import { useState } from 'react'
+import { useCart } from '@/context/CartContext'
 import type { Database } from '@/types/database.types'
 
 type Product = Database['public']['Tables']['products']['Row']
@@ -12,6 +14,16 @@ const gradeBadgeClass: Record<string, string> = {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCart()
+  const [qty, setQty] = useState(1)
+  const [added, setAdded] = useState(false)
+
+  function handleAdd() {
+    addItem(product, qty)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }
+
   return (
     <div className="flex flex-col rounded-2xl border border-amber-100 bg-white shadow-sm overflow-hidden">
       {/* Image */}
@@ -48,13 +60,32 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
       </div>
 
-      {/* Action */}
-      <div className="px-4 pb-4">
+      {/* Quantity + Add */}
+      <div className="flex items-center gap-2 px-4 pb-4">
+        <div className="flex items-center rounded-lg border border-amber-200 overflow-hidden">
+          <button
+            onClick={() => setQty((q) => Math.max(0.5, q - 0.5))}
+            className="px-3 py-2 text-amber-700 hover:bg-amber-50 active:bg-amber-100 font-bold"
+          >
+            −
+          </button>
+          <span className="w-12 text-center text-sm font-semibold text-amber-900">
+            {qty} kg
+          </span>
+          <button
+            onClick={() => setQty((q) => Math.min(product.stock_kg, q + 0.5))}
+            className="px-3 py-2 text-amber-700 hover:bg-amber-50 active:bg-amber-100 font-bold"
+          >
+            +
+          </button>
+        </div>
         <button
-          onClick={() => {}}
-          className="w-full rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-amber-600 active:bg-amber-700"
+          onClick={handleAdd}
+          className={`flex-1 rounded-xl py-2.5 text-sm font-semibold text-white transition-colors ${
+            added ? 'bg-green-500' : 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700'
+          }`}
         >
-          Add to cart
+          {added ? '✓ Added' : 'Add to cart'}
         </button>
       </div>
     </div>
