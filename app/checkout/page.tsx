@@ -43,9 +43,11 @@ export default function CheckoutPage() {
     // Simulate payment processing delay
     await new Promise((r) => setTimeout(r, 2200))
 
-    const { data, error: dbError } = await supabase
+    const id = crypto.randomUUID()
+    const { error: dbError } = await supabase
       .from('orders')
       .insert({
+        id,
         customer_name: form.customer_name.trim(),
         phone: form.phone.trim(),
         city: form.city.trim(),
@@ -59,16 +61,14 @@ export default function CheckoutPage() {
         total,
         status: 'demo_order',
       })
-      .select('id')
-      .single()
 
-    if (dbError || !data) {
+    if (dbError) {
       setStep('form')
       setError('Something went wrong saving your order. Please try again.')
       return
     }
 
-    setOrderId(data.id)
+    setOrderId(id)
     setSnapshot(items.map((i) => ({ name: i.product.name, quantity_kg: i.quantity_kg, price_per_kg: i.product.price_per_kg })))
     clearCart()
     setStep('success')
