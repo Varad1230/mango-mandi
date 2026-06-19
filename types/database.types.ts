@@ -1,6 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       products: {
@@ -15,11 +15,29 @@ export interface Database {
           description: string | null
           created_at: string
         }
-        Insert: Omit<Database['public']['Tables']['products']['Row'], 'id' | 'created_at'> & {
+        Insert: {
           id?: string
+          name: string
+          variety: string
+          price_per_kg: number
+          stock_kg: number
+          image_url?: string | null
+          grade: string
+          description?: string | null
           created_at?: string
         }
-        Update: Partial<Database['public']['Tables']['products']['Insert']>
+        Update: {
+          id?: string
+          name?: string
+          variety?: string
+          price_per_kg?: number
+          stock_kg?: number
+          image_url?: string | null
+          grade?: string
+          description?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
       orders: {
         Row: {
@@ -32,12 +50,40 @@ export interface Database {
           status: string
           created_at: string
         }
-        Insert: Omit<Database['public']['Tables']['orders']['Row'], 'id' | 'created_at'> & {
+        Insert: {
           id?: string
+          customer_name: string
+          phone: string
+          city: string
+          items: Json
+          total: number
+          status: string
           created_at?: string
         }
-        Update: Partial<Database['public']['Tables']['orders']['Insert']>
+        Update: {
+          id?: string
+          customer_name?: string
+          phone?: string
+          city?: string
+          items?: Json
+          total?: number
+          status?: string
+          created_at?: string
+        }
+        Relationships: []
       }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }

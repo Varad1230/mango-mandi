@@ -1,11 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 
 export default function CartNav() {
+  const pathname = usePathname()
   const { items, total } = useCart()
   const itemCount = items.length
+
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <header className="sticky top-0 z-10 border-b border-amber-100 bg-white/90 backdrop-blur">
