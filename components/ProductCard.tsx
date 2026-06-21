@@ -11,6 +11,7 @@ const gradeBadgeClass: Record<string, string> = {
   Premium: 'bg-amber-500 text-white',
   A: 'bg-green-600 text-white',
   B: 'bg-blue-600 text-white',
+  Unripe: 'bg-lime-600 text-white',
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -55,6 +56,11 @@ export default function ProductCard({ product }: { product: Product }) {
           ₹{product.price_per_kg.toLocaleString('en-IN')}
           <span className="text-sm font-normal text-amber-500"> / kg</span>
         </p>
+        {product.grade === 'Unripe' && (
+          <p className="mt-1 inline-flex items-center gap-1 rounded-md bg-lime-50 px-2 py-0.5 text-xs font-medium text-lime-700">
+            🌿 Raw — ripens in 3–5 days at home
+          </p>
+        )}
         {product.description && (
           <p className="mt-1 text-sm text-gray-500 line-clamp-2">{product.description}</p>
         )}

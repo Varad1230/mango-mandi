@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser'
 
-const GRADES = ['Premium', 'A', 'B']
+const GRADES = ['Premium', 'A', 'B', 'Unripe']
 
 export default function AddProductForm() {
   const router = useRouter()
