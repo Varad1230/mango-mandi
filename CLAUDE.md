@@ -29,6 +29,20 @@ real payments, no real customer transactions.
   customer support flows, scaling for real traffic.
 - Still deploy a working live demo link — that matters for the portfolio.
 
+## Product categories (added in Phase 1.5)
+- Grades: Premium, A, B (ripe, ready to eat) and Unripe (raw, ripens in
+  3-5 days at home — sold for pickling/chutney or home-ripening).
+- Unripe products are priced lower and show a note on the card/detail
+  page: "Raw — ripens in 3-5 days at home."
+- Same `products` table, `grade` field just gets a new value — no schema
+  change needed.
+
+## Future integration note (for README, not yet built)
+- The separate AI grading service (mango-ml) classifies photos into
+  unripe / grade_A / grade_B / grade_C. In a more developed version, this
+  classification could auto-suggest which product category a photo
+  belongs to. Not implemented yet — just documented as a natural next step.
+
 ## Conventions
 - TypeScript everywhere. Functional React components.
 - Small components in /components, pages in /app.
