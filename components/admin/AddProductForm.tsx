@@ -11,10 +11,32 @@ export default function AddProductForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
+  const [gradeAI, setGradeAI] = useState<{ confidence: number } | null>(null)
+  const [gradingState, setGradingState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [form, setForm] = useState({
     name: '', variety: '', grade: 'A',
     price_per_kg: '', stock_kg: '', description: '',
   })
+
+  async function handleImageChange(file: File | null) {
+    setImageFile(file)
+    setGradeAI(null)
+    if (!file) { setGradingState('idle'); return }
+
+    setGradingState('loading')
+    const fd = new FormData()
+    fd.append('image', file)
+    try {
+      const res = await fetch('/api/grade', { method: 'POST', body: fd })
+      const json = await res.json()
+      if (!res.ok || json.error) throw new Error(json.error ?? 'grading failed')
+      setForm((f) => ({ ...f, grade: json.grade }))
+      setGradeAI({ confidence: json.confidence })
+      setGradingState('idle')
+    } catch {
+      setGradingState('error')
+    }
+  }
 
   function field(key: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -95,16 +117,37 @@ export default function AddProductForm() {
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-gray-600">Grade *</span>
-          <select required value={form.grade} onChange={field('grade')} className={inputClass}>
-            {GRADES.map((g) => <option key={g}>{g}</option>)}
-          </select>
+          <div className="relative">
+            <select
+              required
+              value={form.grade}
+              onChange={field('grade')}
+              disabled={gradingState === 'loading'}
+              className={inputClass}
+            >
+              {GRADES.map((g) => <option key={g}>{g}</option>)}
+            </select>
+            {gradingState === 'loading' && (
+              <span className="pointer-events-none absolute right-3 top-2.5 text-xs text-amber-500 animate-pulse">
+                Grading…
+              </span>
+            )}
+          </div>
+          {gradeAI && gradingState === 'idle' && (
+            <p className="text-xs text-lime-700">
+              AI predicted · {Math.round(gradeAI.confidence * 100)}% confidence
+            </p>
+          )}
+          {gradingState === 'error' && (
+            <p className="text-xs text-gray-400">AI grading unavailable — select manually</p>
+          )}
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-gray-600">Image</span>
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => handleImageChange(e.target.files?.[0] ?? null)}
             className="text-sm text-gray-500 file:mr-2 file:rounded-lg file:border-0 file:bg-amber-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-amber-700 hover:file:bg-amber-100"
           />
         </label>
