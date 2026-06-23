@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
 
+// Give the Vercel function room to wait for Railway's cold start.
+export const maxDuration = 60
+
 // Maps FastAPI label strings to our four product grades.
 // Update these keys once the real model label strings are confirmed.
 const GRADE_MAP: Record<string, string> = {
@@ -26,7 +29,8 @@ export async function POST(req: NextRequest) {
   body.append('file', imageFile)
 
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), 10_000)
+  // 60s instead of 10s, so a cold-starting Railway backend has time to respond.
+  const timer = setTimeout(() => controller.abort(), 60_000)
 
   try {
     const upstream = await fetch(`${mlUrl}/grade`, {
