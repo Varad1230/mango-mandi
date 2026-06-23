@@ -16,7 +16,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'ML service not configured' }, { status: 503 })
   }
 
-  const body = await req.formData()
+  const incoming = await req.formData()
+  // FastAPI expects the field named "file"; the client sends it as "image"
+  const imageFile = incoming.get('image')
+  if (!imageFile) {
+    return Response.json({ error: 'No image provided' }, { status: 400 })
+  }
+  const body = new FormData()
+  body.append('file', imageFile)
+
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 10_000)
 
