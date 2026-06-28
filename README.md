@@ -66,7 +66,29 @@ Python is kept entirely in the separate ML repo — the Next.js app communicates
 
 ## Screenshots
 
-> _(Screenshots coming — shop page, product card with Unripe badge, admin form with AI grade prediction, checkout flow)_
+### Homepage
+![Homepage](public/screenshots/homepage.png)
+
+### Shop — Browse Mangoes
+![Shop Page](public/screenshots/shop.png)
+
+### Cart
+![Cart](public/screenshots/cart.png)
+
+### Checkout
+![Checkout](public/screenshots/checkout.png)
+
+### Order Confirmation
+![Order Confirmation](public/screenshots/order-confirmation.png)
+
+### Admin — Product Management
+![Admin Products](public/screenshots/admin-products.png)
+
+### Admin — Orders
+![Admin Orders](public/screenshots/admin-orders.png)
+
+### Admin — AI Grade Auto-Fill
+![AI Grader Integration](public/screenshots/admin-ai-grade.png)
 
 ---
 
